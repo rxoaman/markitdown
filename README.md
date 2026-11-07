@@ -71,6 +71,45 @@ pip install -e 'packages/markitdown[all]'
 
 ## Usage
 
+### Desktop GUI (Windows Application)
+
+MarkItDown includes a dedicated desktop application featuring drag-and-drop file conversion, batch processing, real-time status tracking, and a live Markdown preview with copy and export tools.
+
+#### Running the Executable
+- **Standalone Binary (MarkItDown_GUI.exe)**: Run the pre-compiled .exe directly—no Python installation required.
+- **Automated GitHub Builds**: Every push to the main branch triggers an automated GitHub Actions workflow that compiles and packages the latest Windows executable. Download the latest build from the **Actions** tab (under workflow artifacts) or from **Releases**.
+
+#### Running from Source
+`ash
+pip install -e 'packages/markitdown[all]'
+pip install -r requirements-gui.txt
+python markitdown_gui.py
+`
+
+#### How to Use the GUI
+1. **Drag & Drop**: Drag single files, multiple documents, or entire folders directly into the drop zone (or click **📂 Browse Files...** / **📁 Browse Folder...**).
+2. **Supported Formats**: The UI displays a complete panel of all 20+ supported formats across Office documents, spreadsheets, presentations, data feeds, audio, images, archives, and web formats.
+3. **Queue & Status**:
+   - Dropped files can auto-convert immediately or be converted in batch using **⚡ Convert All** or **▶ Convert Selected**.
+   - Monitor conversion progress and individual file status in real-time.
+4. **Output Location**:
+   - By default, converted .md files are saved directly alongside the original input files.
+   - You can also choose a custom output directory in the options bar.
+5. **Preview & Export**:
+   - Select any file in the queue to instantly preview its generated Markdown.
+   - Click **📋 Copy Markdown** to copy directly to your clipboard, or **💾 Save As...** to save it to a new location.
+   - Quickly open the resulting .md file with **📂 Open File** or its containing folder with **📁 Open Folder**.
+
+#### Compiling the Executable Locally
+To build the standalone Windows executable yourself using PyInstaller:
+`ash
+pip install -r requirements-gui.txt
+pyinstaller MarkItDown_GUI.spec --clean --noconfirm
+`
+The resulting executable will be located in dist/MarkItDown_GUI.exe.
+
+---
+
 ### Command-Line
 
 ```bash

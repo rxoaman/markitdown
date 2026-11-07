@@ -1,0 +1,61 @@
+name: Build Windows GUI Executable
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+  release:
+    types: [ published ]
+
+jobs:
+  build-windows:
+    name: Build MarkItDown Windows EXE
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e "packages/markitdown[all]"
+          pip install -r requirements-gui.txt
+
+      - name: Build EXE with PyInstaller
+        run: |
+          pyinstaller MarkItDown_GUI.spec --clean --noconfirm
+
+      - name: Verify Executable
+        shell: pwsh
+        run: |
+          if (-not (Test-Path "dist/MarkItDown_GUI.exe")) {
+            Write-Error "dist/MarkItDown_GUI.exe was not created!"
+            exit 1
+          }
+          $size = (Get-Item "dist/MarkItDown_GUI.exe").Length
+          Write-Host "Successfully built MarkItDown_GUI.exe ($size bytes)"
+
+      - name: Upload Windows Executable Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: MarkItDown_GUI-Windows
+          path: dist/MarkItDown_GUI.exe
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Upload to GitHub Release
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/MarkItDown_GUI.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
